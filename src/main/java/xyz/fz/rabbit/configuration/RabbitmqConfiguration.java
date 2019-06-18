@@ -19,6 +19,12 @@ public class RabbitmqConfiguration {
 
     public static final String ROUTING_FOO_ERR = "routing.foo.err";
 
+    public static final String EXCHANGE_LOG = "exchange.log";
+
+    public static final String QUEUE_LOG = "queue.log";
+
+    public static final String ROUTING_LOG = "routing.log";
+
     @Bean
     public TopicExchange fooExchange() {
         return new TopicExchange(EXCHANGE_FOO);
@@ -47,5 +53,20 @@ public class RabbitmqConfiguration {
     @Bean
     public Binding fooErrBinding(@Qualifier("fooErrQueue") Queue fooErrQueue, @Qualifier("fooErrExchange") TopicExchange fooErrExchange) {
         return BindingBuilder.bind(fooErrQueue).to(fooErrExchange).with(ROUTING_FOO_ERR);
+    }
+
+    @Bean
+    public TopicExchange logExchange() {
+        return new TopicExchange(EXCHANGE_LOG, false, false);
+    }
+
+    @Bean
+    public Queue logQueue() {
+        return new Queue(QUEUE_LOG, false);
+    }
+
+    @Bean
+    public Binding logBinding(@Qualifier("logQueue") Queue logQueue, @Qualifier("logExchange") TopicExchange logExchange) {
+        return BindingBuilder.bind(logQueue).to(logExchange).with(ROUTING_LOG);
     }
 }
